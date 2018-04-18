@@ -1,18 +1,16 @@
 %Cargamos el archivo
-img=imread('Image_1_Diagram_16.png');
-%Binarización
+img=imread('../data/Image_1_Diagram_16.png');
+%Binarizacion
 img_bw=im2bw(img);
-%Etiquetar las células
+%Etiquetar las celulas
 img_label=bwlabel(img_bw);
+    x1 = img_label(1,:);
+    x2= img_label(end,:);
+    y1= img_label(:,1);
+    y2= img_label(:,end);
+no_val=unique([x1, x2, y1', y2']);
 
-for i=1:NUM
-[r,n] = find(img_label == i);
-    if sum(cell_coordinates(1,:)) >=1 || sum(cell_coordinates(:,1))>=1 || sum(cell_coordinates(1024,:))>=1 || sum(cell_coordinates(:,512))>=1
-        no_val{i,1}= (img_label==i);
-    else 
-        valid_cells{i,1}= (img_label==i);
-    end
-end 
+ 
 
 
         
