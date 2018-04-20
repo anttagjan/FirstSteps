@@ -3,14 +3,17 @@ img=imread('../data/Image_1_Diagram_16.png');
 %Binarizar la imagen y etiquetar las celulas
 img_bw=im2bw(img);
 img_label=bwlabel(img_bw);
-
+totalCells=1:max(max(img_label));
 
 %Establecer kernel de dilatacion
-se = strel('square', 8);
+ratio=4;
+se = strel('disk', ratio);
 
 %Dilatacion de las celulas para comprobar cuales comparten pixeles y
-%establecer el numero de vecinos y las etiquetas de los vecinos
-for i=1:60
+%establecer el numero de vecinos y las etiquetas de los vecinos.
+neighbours_labels={};
+cells_neighbours={};
+for i=totalCells
     neighbours= unique(img_label(imdilate(img_label==i,se) == 1));
     neighbours(neighbours== 0)=[];
     neighbours(neighbours ==i)=[];
@@ -21,16 +24,15 @@ for i=1:60
 end 
 
 % Calcular el area de cada celula
-area_cells=calculate_area(img_label);
-
+area_cells=regionprops(img_bw,'Area');
+area_cells=struct2cell(area_cells);
 %Establecer las celulas no validas y eliminar los datos que corresponden a
 %estas.
 no_val=no_valid_cells2(img_label);
-for j=1:length(no_val)
-neighbours_labels{no_val(j),1}=[];
-cells_neighbours{no_val(j),1}= [];
-area_cells{no_val(j),1}= [];
-end 
+indexesNoValidCells=ismember(totalCells,no_val);
+neighbours_labels{indexesNoValidCells,1}=[];
+cells_neighbours{indexesNoValidCells,1}=[];
+area_cells(indexesNoValidCells)=[];
 
 %Poligon Distribution
 total=length(cells_neighbours)-length(no_val);
@@ -64,11 +66,11 @@ poligon_distribution=[100*triangles/total 100*squares/total 100*pentagons/total 
 
 poligon_distribution=array2table(poligon_distribution);
 poligon_distribution.Properties.VariableNames = {'Triangles' 'Squares' 'Pentagons' 'Hexagons' 'Heptagons' 'Octogons' 'Other_Poligons'};
-area_cells=table((1:60)',area_cells);
+area_cells=table((totalCells)',area_cells);
 area_cells.Properties.VariableNames = {'Cells','Area'};
-cells_neighbours=table((1:60)',cells_neighbours);
+cells_neighbours=table((totalCells)',cells_neighbours);
 cells_neighbours.Properties.VariableNames = {'Cells','Number_of_Neighbours'};
-neighbours_labels=table((1:60)',neighbours_labels);
+neighbours_labels=table((totalCells)',neighbours_labels);
 neighbours_labels.Properties.VariableNames{1} = 'Cells';
 
 writetable(area_cells,'results_cells_parameters.xls','sheet',1,'Range','B3')
