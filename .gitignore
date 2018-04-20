@@ -107,3 +107,6 @@ ENV/
 results/
 data/
 *.asv
+*.csv
+src/.DS_Store
+.DS_Store
