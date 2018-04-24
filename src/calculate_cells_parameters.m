@@ -5,6 +5,18 @@ img_bw=im2bw(img);
 img_label=bwlabel(img_bw);
 totalCells=1:max(max(img_label));
 
+%Colorear y mostrar la etiqueta de las celulas
+img_label_color=label2rgb(img_label);
+centroid_labels=regionprops(img_bw,'Centroid');
+imshow(img_label_color)
+hold on
+for k = 1:numel(centroid_labels)
+    c = centroid_labels(k).Centroid;
+    text(c(1), c(2), sprintf('%d', k), ...
+        'HorizontalAlignment', 'center', ...
+        'VerticalAlignment', 'middle');
+end
+hold off
 %Establecer kernel de dilatacion
 ratio=4;
 se = strel('disk', ratio);
@@ -32,34 +44,18 @@ no_val=no_valid_cells2(img_label);
 indexesNoValidCells=ismember(totalCells,no_val);
 neighbours_labels{indexesNoValidCells,1}=[];
 cells_neighbours{indexesNoValidCells,1}=[];
-area_cells(indexesNoValidCells)=[];
+area_cells{indexesNoValidCells,1}=[];
 
 %Poligon Distribution
 total=length(cells_neighbours)-length(no_val);
-triangles=0;
-squares=0;
-pentagons=0;
-hexagons=0;
-heptagons=0;
-octagons=0;
-other_poligons=0;
-for i=1:60
-if cells_neighbours{i}(:)==3
-    triangles= triangles+1;
-elseif cells_neighbours{i}(:)==4
-    squares= squares+1;
-elseif cells_neighbours{i}(:)==5
-    pentagons= pentagons+1;
-elseif cells_neighbours{i}(:)==6
-    hexagons= hexagons+1;
-elseif cells_neighbours{i}(:)==7
-    heptagons= heptagons+1;
-elseif cells_neighbours{i}(:)==8
-    octagons = octagons+1;
-elseif cells_neighbours{i}(:) >= 9
-    other_poligons= other_poligons+1;
-end
-end 
+triangles=sum(cell2mat(cells_neighbours)==3);
+squares=sum(cell2mat(cells_neighbours)==4);
+pentagons=sum(cell2mat(cells_neighbours)==5);
+hexagons=sum(cell2mat(cells_neighbours)==6);
+heptagons=sum(cell2mat(cells_neighbours)==7);
+octagons=sum(cell2mat(cells_neighbours)==8);
+other_poligons=sum(cell2mat(cells_neighbours)>=9);
+
 poligon_distribution=[100*triangles/total 100*squares/total 100*pentagons/total 100*hexagons/total 100*heptagons/total 100*octagons/total 100*other_poligons/total];
 
 % Exportar a excel
