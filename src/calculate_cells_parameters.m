@@ -6,7 +6,7 @@ img_label=bwlabel(img_bw);
 totalCells=1:max(max(img_label));
 
 %Colorear y mostrar la etiqueta de las celulas
-img_label_color=label2rgb(img_label);
+figure, imshow(img_bw); colormap('jet');
 centroid_labels=regionprops(img_bw,'Centroid');
 imshow(img_label_color)
 hold on
