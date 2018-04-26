@@ -1,3 +1,6 @@
+clc
+clear all
+close all
 %Open the required file
 img=imread('../data/Image_1_Diagram_16.png');
 
@@ -39,15 +42,17 @@ poligon_distribution=array2table(poligon_distribution);
 poligon_distribution.Properties.VariableNames = {'Triangles' 'Squares' 'Pentagons' 'Hexagons' 'Heptagons' 'Octogons' 'Other_Poligons'};
 AreaValidCells=table((totalCells)',AreaValidCells');
 AreaValidCells.Properties.VariableNames = {'Cells','Area'};
+
+writetable(AreaValidCells,'results_cells_parameters.xls','sheet',1,'Range','B3')
+writetable(poligon_distribution,'results_cells_parameters.xls','sheet',2,'Range','B3')
+
+% It is optional save these last variables
 cellsNeighboursValidCells=table((totalCells)',cellsNeighboursValidCells);
 cellsNeighboursValidCells.Properties.VariableNames = {'Cells','Number_of_Neighbours'};
 NeighboursLabelsValidCells=table((totalCells)',NeighboursLabelsValidCells);
 NeighboursLabelsValidCells.Properties.VariableNames{1} = 'Cells';
 
-writetable(AreaValidCells,'results_cells_parameters.xls','sheet',1,'Range','B3')
-writetable(cellsNeighboursValidCells,'results_cells_parameters.xls','sheet',2,'Range','B3')
 writetable(NeighboursLabelsValidCells,'results_cells_parameters.xls','sheet',3,'Range','B3')
-writetable(poligon_distribution,'results_cells_parameters.xls','sheet',4,'Range','B3')
-
+writetable(cellsNeighboursValidCells,'results_cells_parameters.xls','sheet',4,'Range','B3')
 
 
