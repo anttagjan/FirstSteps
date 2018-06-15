@@ -21,7 +21,7 @@ img_dilate=imdilate(img_edge,se);
 img_watershed=watershed(img_dilate);
 img_label=bwlabel(img_watershed);
 figure,imshow(img_label)
-
+imwrite(img_label,'../results/Voronoi_Diagram.jpg')
 end
 
 
