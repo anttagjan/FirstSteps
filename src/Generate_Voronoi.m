@@ -19,7 +19,8 @@ img_edge=edge(img_cropped);
 se = strel('disk',4);
 img_dilate=imdilate(img_edge,se);
 img_watershed=watershed(img_dilate);
-img_label=bwlabel(img_watershed);
+c=input('Choose type of connectivity: ');
+img_label=bwlabel(img_watershed,c);
 figure,imshow(img_label)
 imwrite(img_label,'../results/Voronoi_Diagram.jpg')
 end
