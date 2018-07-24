@@ -3,15 +3,23 @@ function Generate_Voronoi
 clc 
 close all
 %Generate seeds in a binary image.
-img_bw = zeros(1024,1024);
+img_bw = zeros(512,512);
 n=input('Number of seeds :');
-seeds=unique(round(1000*rand(1,n))); 
-img_bw(seeds,seeds)=1;
+x = round(512*gallery('uniformdata',[1 n],0));
+y = round(512*gallery('uniformdata',[1 n],1)); 
+M=[x ; y];
+for i=1:n 
+img_bw(M(1,i),M(2,i))=1;
+end
 
 %Generate the Voronoi Diagram.
 D=bwdist(img_bw);
 img_w=watershed(D);
-figure, image(img_w), colormap(jet);
+img_bw2=im2bw(~img_w);
+se=strel('disk',2);
+img_dilate=imdilate(img_bw2,se);
+figure,imshow(img_dilate)
+
 
 end
 
